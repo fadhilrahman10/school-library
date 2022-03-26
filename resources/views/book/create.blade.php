@@ -80,7 +80,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col text-right">
-                                            <button type="submit" class="btn btn-success mx-5">Save Now</button>
+                                            <button type="submit" class="btn btn-success mx-5">Create</button>
                                         </div>
                                     </div>
                                 </form>
