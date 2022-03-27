@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\CreatorController;
-use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CreatorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,10 +24,17 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 
-Route::resource('book', BookController::class)->except('show')->middleware('auth');
 
-Route::resource('creator', CreatorController::class)->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::resource('user', UserController::class)->except('show')->middleware('auth');
+    Route::resource('book', BookController::class)->except('show');
+
+    Route::resource('creator', CreatorController::class);
+
+    Route::get('/change-password/{id}', [ChangePasswordController::class, 'edit'])->name('reset-password');
+    Route::put('/change-password/{user}', [ChangePasswordController::class, 'update'])->name('update-password');
+});
+
+Route::resource('user', UserController::class)->except('show', 'edit', 'update')->middleware(['auth', 'admin']);

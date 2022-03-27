@@ -18,10 +18,9 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-
         if (Auth::user() && Auth::user()->roles == 'ADMIN') {
             return $next($request);
         }
-        return view('home');
+        return to_route('home');
     }
 }

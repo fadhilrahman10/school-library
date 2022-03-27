@@ -35,7 +35,7 @@
                                         </button>
                                     </div>
                                 @endif
-                                <form action="{{ route('user.update', $user) }}" method="POST"
+                                <form action="{{ route('update-password', $user) }}" method="POST"
                                     enctype="multipart/form-data">
                                     @method('put')
                                     @csrf

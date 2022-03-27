@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth']);
     }
 
     /**
@@ -29,12 +29,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->roles == 'USER') {
-            return view('dashboard')->with('user', Auth::user());
-        }
         if (request()->ajax()) {
 
-            $query = User::all();
+            $query = User::where('roles', '!=', 'ADMIN')->get();
 
             return DataTables::of($query)->addColumn('action', function ($item) {
                 return '
@@ -68,9 +65,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->roles == 'USER') {
-            return view('dashboard')->with('user', Auth::user());
-        }
         return view('user.create');
     }
 
@@ -82,11 +76,6 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-
-        if (Auth::user()->roles == 'USER') {
-            return view('dashboard')->with('user', Auth::user());
-        }
-
         $data = $request->all();
 
         $data['password'] = bcrypt($request->password);
@@ -115,8 +104,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::findOrFail($id);
-        return view('user.edit')->with(['user' => $user]);
+        // $user = User::findOrFail($id);
+        // return view('user.edit')->with(['user' => $user]);
     }
 
     /**
@@ -128,26 +117,26 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'old_password' => 'required',
-            'password' => ['required'],
-            'confirm_password' => ['required|same:password'],
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string',
+        //     'old_password' => 'required',
+        //     'password' => ['required'],
+        //     'confirm_password' => ['required|same:password'],
+        // ]);
 
-        $check = Hash::check($request->old_password, auth()->user()->password);
+        // $check = Hash::check($request->old_password, auth()->user()->password);
 
-        if ($check) {
-            $data = [
-                'name' => $request->name,
-                'password' => bcrypt($request->password),
-            ];
-            $user->update($data);
+        // if ($check) {
+        //     $data = [
+        //         'name' => $request->name,
+        //         'password' => bcrypt($request->password),
+        //     ];
+        //     $user->update($data);
 
-            return to_route('user.edit', $user)->with('success', 'password has been updated');
-        } else {
-            return to_route('user.edit', $user)->with('failed', 'failed to change password');
-        }
+        //     return to_route('user.edit', $user)->with('success', 'password has been updated');
+        // } else {
+        //     return to_route('user.edit', $user)->with('failed', 'failed to change password');
+        // }
     }
 
     /**
